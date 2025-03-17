@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block title %}Projects - IT Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Project Marketplace</h1>
+    
+    <!-- Search and Filters -->
+    <div class="row mb-4">
+        <div class="col-lg-4 mb-3 mb-lg-0">
+            <input type="text" id="project-search" class="form-control" placeholder="Search projects...">
+        </div>
+        <div class="col-lg-4 mb-3 mb-lg-0">
+            <div class="btn-group w-100" role="group" aria-label="Project filters">
+                <button type="button" class="btn btn-outline-primary project-filter active" data-filter="all">All</button>
+                <button type="button" class="btn btn-outline-primary project-filter" data-filter="open">Open</button>
+                <button type="button" class="btn btn-outline-primary project-filter" data-filter="in_progress">In Progress</button>
+                <button type="button" class="btn btn-outline-primary project-filter" data-filter="completed">Completed</button>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="d-flex align-items-center">
+                <label for="budget-range" class="form-label me-2 mb-0">Budget:</label>
+                <input type="range" class="form-range" id="budget-range" min="100" max="10000" step="100" value="10000">
+                <span id="budget-display" class="ms-2">$10,000</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Projects List -->
+    <div class="row projects-container">
+        {% if projects %}
+            {% for project in projects %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card project-card h-100" data-status="{{ project.status }}" data-budget="{{ project.budget }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <span class="project-status project-status-{{ project.status }}">{{ project.status.replace('_', ' ').title() }}</span>
+                            <p class="card-text text-muted mt-2">{{ project.description|truncate(150) }}</p>
+                            
+                            <div class="d-flex justify-content-between mt-3">
+                                <div>
+                                    <p class="mb-0"><strong>Budget:</strong> ${{ project.budget }}</p>
+                                    <p class="mb-0"><small class="text-muted">Posted by: {{ project.client.username }}</small></p>
+                                </div>
+                                {% if project.company %}
+                                    <span class="badge bg-secondary">Assigned</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Posted {{ project.created_at.strftime('%b %d, %Y') }}</small>
+                                <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-sm btn-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No projects available at the moment.
+                    {% if current_user.is_authenticated and current_user.user_type == 'client' %}
+                        <a href="{{ url_for('create_project') }}">Post a new project</a> to get started!
+                    {% else %}
+                        Check back later or <a href="{{ url_for('register') }}">register</a> to post a project!
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Post Project CTA for Clients -->
+    {% if current_user.is_authenticated and current_user.user_type == 'client' %}
+        <div class="text-center mt-4">
+            <a href="{{ url_for('create_project') }}" class="btn btn-lg btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Post a New Project
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/projects.js') }}"></script>
+{% endblock %}

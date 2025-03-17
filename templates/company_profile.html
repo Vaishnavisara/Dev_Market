@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ company.name }} - IT Marketplace{% endblock %}
+
+{% block content %}
+<!-- Company Header -->
+<section class="company-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="company-logo mb-3">
+                    {{ company.name[0] }}
+                </div>
+                <h1>{{ company.name }}</h1>
+                {% if company.website %}
+                    <a href="{{ company.website }}" target="_blank" class="text-decoration-none">
+                        <i class="fas fa-globe me-1"></i>{{ company.website }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-4 company-profile">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- About Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">About</h3>
+                </div>
+                <div class="card-body">
+                    {% if company.description %}
+                        <p>{{ company.description }}</p>
+                    {% else %}
+                        <p class="text-muted">No description available.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Services Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">Services</h3>
+                </div>
+                <div class="card-body">
+                    {% if company.services %}
+                        <div class="row">
+                            {% for service in company.services.split('\n') %}
+                                {% if service.strip() %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <span>{{ service.strip() }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No services listed yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Portfolio / Projects Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">Portfolio</h3>
+                </div>
+                <div class="card-body">
+                    {% if company.projects %}
+                        <div class="row">
+                            {% for project in company.projects %}
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 portfolio-item" data-project-id="{{ project.id }}">
+                                        <div class="card-body">
+                                            <h5 class="card-title project-title">{{ project.title }}</h5>
+                                            <p class="card-text project-description">{{ project.description|truncate(100) }}</p>
+                                            <p class="mb-0"><strong>Budget:</strong> ${{ project.budget }}</p>
+                                            <p class="mb-0"><strong>Status:</strong> 
+                                                <span class="project-status project-status-{{ project.status }}">
+                                                    {{ project.status.replace('_', ' ').title() }}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="card-footer bg-white">
+                                            <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-sm btn-outline-primary">
+                                                View Project
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No projects available in the portfolio yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Contact / Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">Contact</h3>
+                </div>
+                <div class="card-body">
+                    {% if current_user.is_authenticated %}
+                        <form id="contact-form" action="{{ url_for('send_message') }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="recipient" value="{{ company.user.username }}">
+                            <div class="mb-3">
+                                <label for="contact-message" class="form-label">Message</label>
+                                <textarea class="form-control" id="contact-message" name="content" rows="4" required></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle me-2"></i>You need to 
+                            <a href="{{ url_for('login') }}">log in</a> to contact this company.
+                        </div>
+                        <div class="d-grid">
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Log In to Contact
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Company Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">Company Details</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Member Since:</strong> {{ company.created_at.strftime('%B %Y') }}</p>
+                    <p><strong>Projects Completed:</strong> 
+                        {{ company.projects|selectattr('status', 'equalto', 'completed')|list|length }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Edit Profile (if owner) -->
+            {% if current_user.is_authenticated and current_user.id == company.user_id %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="mb-0">Manage Profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid">
+                            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit Company Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Portfolio Modal -->
+<div class="modal fade" id="portfolio-modal" tabindex="-1" aria-labelledby="portfolioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="portfolioModalLabel">Project Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-body-text">Project description goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" class="btn btn-primary view-project-link">View Full Project</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ project.title }} - IT Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('projects') }}">Projects</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ project.title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Project Details -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ project.title }}</h2>
+                    <span class="project-status project-status-{{ project.status }}">{{ project.status.replace('_', ' ').title() }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Project Description</h5>
+                        <p>{{ project.description }}</p>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Budget</h5>
+                            <p class="mb-0 fs-4">${{ project.budget }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Posted On</h5>
+                            <p class="mb-0">{{ project.created_at.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>Posted By</h5>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-user-circle fa-2x text-primary me-3"></i>
+                            <div>
+                                <p class="mb-0 fw-bold">{{ project.client.username }}</p>
+                                <p class="mb-0 text-muted">Client</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if project.company %}
+                        <div class="mb-4">
+                            <h5>Assigned To</h5>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-building fa-2x text-primary me-3"></i>
+                                <div>
+                                    <p class="mb-0 fw-bold">{{ project.company.name }}</p>
+                                    <p class="mb-0 text-muted">IT Company</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons based on user role and project status -->
+                    <div class="mt-4">
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.user_type == 'company' and project.status == 'open' and not project.company_id %}
+                                <button class="btn btn-primary" onclick="applyToProject({{ project.id }})">
+                                    <i class="fas fa-handshake me-2"></i>Apply for this Project
+                                </button>
+                            {% elif current_user.id == project.client_id and project.status == 'open' %}
+                                <a href="{{ url_for('payment_page', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-dollar-sign me-2"></i>Make Payment to Start
+                                </a>
+                            {% elif current_user.id == project.client_id and project.status == 'in_progress' %}
+                                <button class="btn btn-success" disabled>
+                                    <i class="fas fa-check-circle me-2"></i>In Progress
+                                </button>
+                            {% endif %}
+                            
+                            {% if current_user.id == project.client_id or (project.company and current_user.id == project.company.user_id) %}
+                                <a href="{{ url_for('messages') }}" class="btn btn-outline-primary ms-2">
+                                    <i class="fas fa-comment me-2"></i>Messages
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login to Apply
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Related Projects -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Similar Projects</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for related_project in project.client.projects[:3] if related_project.id != project.id %}
+                            <a href="{{ url_for('project_detail', project_id=related_project.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1">{{ related_project.title }}</h6>
+                                    <span class="text-muted">${{ related_project.budget }}</span>
+                                </div>
+                                <p class="mb-1 text-muted small">{{ related_project.description|truncate(80) }}</p>
+                            </a>
+                        {% else %}
+                            <p class="text-muted mb-0">No similar projects found.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Company Information (if assigned) -->
+            {% if project.company %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Assigned Company</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                {{ project.company.name[0] }}
+                            </div>
+                            <h5>{{ project.company.name }}</h5>
+                        </div>
+                        
+                        {% if project.company.description %}
+                            <p>{{ project.company.description|truncate(150) }}</p>
+                        {% endif %}
+                        
+                        <div class="mt-3 text-center">
+                            <a href="{{ url_for('company_profile', company_id=project.company.id) }}" class="btn btn-outline-primary">
+                                <i class="fas fa-building me-2"></i>Visit Company Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- For clients: Project actions -->
+            {% if current_user.is_authenticated and current_user.id == project.client_id %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Project Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            {% if project.status == 'open' %}
+                                <button class="btn btn-warning">
+                                    <i class="fas fa-edit me-2"></i>Edit Project
+                                </button>
+                            {% endif %}
+                            {% if project.status == 'in_progress' %}
+                                <button class="btn btn-success">
+                                    <i class="fas fa-check-circle me-2"></i>Mark as Completed
+                                </button>
+                            {% endif %}
+                            {% if project.status != 'completed' %}
+                                <button class="btn btn-danger">
+                                    <i class="fas fa-trash-alt me-2"></i>Cancel Project
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/projects.js') }}"></script>
+{% endblock %}

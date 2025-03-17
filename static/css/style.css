@@ -1,0 +1,332 @@
+/* Main Stylesheet */
+
+/* Custom Variables */
+:root {
+    --primary-color: #0052CC;
+    --secondary-color: #00875A;
+    --accent-color: #FF5630;
+    --background-color: #FFFFFF;
+    --text-color: #172B4D;
+    --light-gray: #F4F5F7;
+    --medium-gray: #DFE1E6;
+    --dark-gray: #7A869A;
+    --success-color: #36B37E;
+    --warning-color: #FFAB00;
+    --danger-color: #FF5630;
+}
+
+/* Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--background-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0747A6;
+    border-color: #0747A6;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #006644;
+    border-color: #006644;
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.btn-accent:hover {
+    background-color: #DE350B;
+    border-color: #DE350B;
+    color: white;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Navigation */
+.navbar {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-color);
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* Cards */
+.card {
+    border-radius: 8px;
+    border: 1px solid var(--medium-gray);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: var(--light-gray);
+    border-bottom: 1px solid var(--medium-gray);
+    font-weight: 600;
+}
+
+.card-title {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.card-img-top {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 4px;
+    border: 1px solid var(--medium-gray);
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 82, 204, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+/* Alerts */
+.alert-success {
+    background-color: var(--success-color);
+    border-color: #2D995B;
+    color: white;
+}
+
+.alert-warning {
+    background-color: var(--warning-color);
+    border-color: #D97008;
+    color: white;
+}
+
+.alert-danger {
+    background-color: var(--danger-color);
+    border-color: #DE350B;
+    color: white;
+}
+
+/* Project Cards */
+.project-card {
+    height: 100%;
+}
+
+.project-card .card-footer {
+    background-color: white;
+    border-top: 1px solid var(--medium-gray);
+}
+
+.project-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.project-status-open {
+    background-color: #DEEBFF;
+    color: #0052CC;
+}
+
+.project-status-in-progress {
+    background-color: #FFF0B3;
+    color: #FF8B00;
+}
+
+.project-status-completed {
+    background-color: #E3FCEF;
+    color: #006644;
+}
+
+/* Company Profile */
+.company-header {
+    background-color: var(--light-gray);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.company-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.company-services {
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Messages */
+.message-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.message-sent {
+    background-color: #E3FCEF;
+    margin-left: 2rem;
+}
+
+.message-received {
+    background-color: #DEEBFF;
+    margin-right: 2rem;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: var(--dark-gray);
+    text-align: right;
+}
+
+/* Hero Section */
+.hero {
+    background-color: #F4F9FF;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: #505F79;
+}
+
+/* Footer */
+footer {
+    background-color: #F4F5F7;
+    padding: 3rem 0;
+    margin-top: 3rem;
+}
+
+footer h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+footer ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+footer ul li {
+    margin-bottom: 0.5rem;
+}
+
+footer ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+footer ul li a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .hero {
+        padding: 2rem 0;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+}

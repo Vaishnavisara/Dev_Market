@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}Payment for {{ project.title }} - IT Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('projects') }}">Projects</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Payment</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="mb-0">Payment Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        You're about to make a payment to start your project with the selected company.
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Project Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Project:</strong> {{ project.title }}</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="project-status project-status-{{ project.status }}">
+                                        {{ project.status.replace('_', ' ').title() }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Posted On:</strong> {{ project.created_at.strftime('%B %d, %Y') }}</p>
+                                <p><strong>Budget:</strong> <span class="fs-4 fw-bold text-primary">${{ project.budget }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if project.company %}
+                        <div class="mb-4">
+                            <h5>Company Information</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                                    {{ project.company.name[0] }}
+                                </div>
+                                <div>
+                                    <p class="mb-0 fw-bold">{{ project.company.name }}</p>
+                                    <a href="{{ url_for('company_profile', company_id=project.company.id) }}" class="text-decoration-none">
+                                        View profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mb-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No company has been assigned to this project yet. You will need to select a company before making a payment.
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <h5>Payment Summary</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Project Budget:</span>
+                                    <span>${{ project.budget }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Platform Fee:</span>
+                                    <span>$0.00</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center fw-bold">
+                                    <span>Total Amount:</span>
+                                    <span class="fs-5">${{ project.budget }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if project.company %}
+                        <form action="{{ url_for('payment_bp.create_checkout_session', project_id=project.id) }}" method="POST">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="d-grid">
+                            <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-building me-2"></i>Select a Company First
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-5">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Payment Information</h5>
+                </div>
+                <div class="card-body">
+                    <p>After making this payment:</p>
+                    <ul>
+                        <li class="mb-2">Your project status will change to "In Progress"</li>
+                        <li class="mb-2">The selected company will be notified to begin work</li>
+                        <li class="mb-2">You can communicate with the company via the messaging system</li>
+                        <li class="mb-2">The payment will be held securely until the project is completed</li>
+                        <li>Once the project is complete, you can mark it as finished and the company will receive payment</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Secure Payment</h5>
+                </div>
+                <div class="card-body">
+                    <p>All payments are processed securely through Stripe, a leading payment processor.</p>
+                    <div class="text-center mb-3">
+                        <i class="fab fa-stripe fa-4x text-primary"></i>
+                    </div>
+                    <p class="mb-0 text-center">
+                        <i class="fas fa-lock me-2"></i>Your payment information is encrypted and secure
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

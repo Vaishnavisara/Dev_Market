@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block title %}Payment Successful - IT Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 text-center">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success"></i>
+                    </div>
+                    
+                    <h1 class="mb-4">Payment Successful!</h1>
+                    
+                    <p class="lead mb-4">Your payment for <strong>{{ project.title }}</strong> has been processed successfully.</p>
+                    
+                    <div class="alert alert-success mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle fa-2x me-3"></i>
+                            <div class="text-start">
+                                Your project is now marked as <strong>"In Progress"</strong>. The company has been notified and will begin work on your project.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5>Payment Details</h5>
+                            <div class="row text-start">
+                                <div class="col-sm-6">
+                                    <p><strong>Amount:</strong> ${{ payment.amount }}</p>
+                                    <p><strong>Date:</strong> {{ payment.created_at.strftime('%B %d, %Y') }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p><strong>Status:</strong> {{ payment.status.title() }}</p>
+                                    <p><strong>Reference:</strong> #{{ payment.id }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Return to Project
+                        </a>
+                        <a href="{{ url_for('messages') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-comment me-2"></i>Message the Company
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <p>
+                    <i class="fas fa-envelope me-2"></i>
+                    A confirmation email has been sent to your registered email address.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

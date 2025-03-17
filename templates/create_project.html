@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}Post a New Project - IT Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Post a New Project</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('create_project') }}" id="project-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-4">
+                            {{ form.title.label(class="form-label") }}
+                            {% if form.title.errors %}
+                                {{ form.title(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.title.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.title(class="form-control", placeholder="e.g., E-commerce Website Development") }}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            {{ form.description.label(class="form-label") }}
+                            {% if form.description.errors %}
+                                {{ form.description(class="form-control is-invalid", rows="6") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.description(class="form-control", rows="6", placeholder="Describe your project requirements in detail...") }}
+                            {% endif %}
+                            <div class="form-text">Be specific about your requirements, timeline, and expectations.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            {{ form.budget.label(class="form-label") }}
+                            {% if form.budget.errors %}
+                                {{ form.budget(class="form-control is-invalid", type="number", min="100") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.budget.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.budget(class="form-control", type="number", min="100", placeholder="Enter amount in USD") }}
+                            {% endif %}
+                            <div class="form-text">Set a realistic budget to attract qualified IT companies.</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Tips for a Great Project Post</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li class="mb-2">Be clear and specific about your project requirements.</li>
+                        <li class="mb-2">Provide details about your target audience and goals.</li>
+                        <li class="mb-2">Specify any technical requirements or preferences.</li>
+                        <li class="mb-2">Include your expected timeline for project completion.</li>
+                        <li class="mb-2">Set a realistic budget based on your project scope.</li>
+                        <li>Mention any specific expertise or experience you're looking for.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Post your project with detailed requirements.</li>
+                        <li class="mb-2">Companies will review your project and reach out to you.</li>
+                        <li class="mb-2">Review company profiles and select your preferred partner.</li>
+                        <li class="mb-2">Make a secure payment to start the project.</li>
+                        <li>Communicate and collaborate throughout the development process.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/projects.js') }}"></script>
+{% endblock %}
